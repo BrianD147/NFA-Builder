@@ -79,7 +79,77 @@ func inToPost(infix string) string {
 
 //Function which changes postfix expression to a non-deterministic finite automaton (NFA)
 func regexToNFA(postfix string) *nfa {
+	//Array of pointers to NFA's that is empty
+	nfaStack := []*nfa{}
+	//Loops through postfix input until its end ('_' holds position in string, 'r' holds value at position)
+	for _, r := range postfix {
+		switch r {
+		//When 'r' is concatinate character
+		case '.':
+			//Pop last element off the nfaStack and put on frag2
+			frag2 := nfaStack[len(nfaStack)-1]
+			nfaStack = nfaStack[:len(nfaStack)-1]
+			//Pop last element off the nfaStack and put on frag1
+			frag1 := nfaStack[len(nfaStack)-1]
+			nfaStack = nfaStack[:len(nfaStack)-1]
 
+			//First edge accept state of frag1 should point to frag2 initial
+			frag1.accept.edge1 = frag2.initial
+
+			//Add a new nfa struct pointer to the stack which points to the nfaStack
+			nfaStack = append(nfaStack, &nfa{initial: frag1.initial, accept: frag2.accept})
+
+		//When 'r' is union character
+		case '|':
+			//Pop last element off the nfaStack and put on frag2
+			frag2 := nfaStack[len(nfaStack)-1]
+			nfaStack = nfaStack[:len(nfaStack)-1]
+			//Pop last element off the nfaStack and put on frag1
+			frag1 := nfaStack[len(nfaStack)-1]
+			nfaStack = nfaStack[:len(nfaStack)-1]
+
+			//Make two new states
+			accept := state{}
+			initial := state{edge1: frag1.initial, edge2: frag2.initial}
+
+			//Reassign fragment accept edges to the new accept state, which points back to the initials for the frags
+			frag1.accept.edge1 = &accept
+			frag2.accept.edge2 = &accept
+
+			//Add a new nfa struct pointer to the stack which points to the nfaStack from the new states
+			nfaStack = append(nfaStack, &nfa{initial: &initial, accept: &accept})
+
+		//When 'r' is Kleene star character
+		case '*':
+			//Pop element off the nfaStack and put on frag
+			frag := nfaStack[len(nfaStack)-1]
+			nfaStack = nfaStack[:len(nfaStack)-1]
+
+			//Make two new states
+			accept := state{}
+			initial := state{edge1: frag.initial, edge2: &accept}
+
+			//Reassign fragment accept edge2 to the new accept state, and accept edge1 to the fragments intial
+			frag.accept.edge1 = frag.initial
+			frag.accept.edge2 = &accept
+
+			//Add a new nfa struct pointer to the stack which points to the nfaStack from the new state
+			nfaStack = append(nfaStack, &nfa{initial: &initial, accept: &accept})
+
+		//When 'r' s any other character
+		default:
+			//Make two new states
+			//Set the symbol to 'r', otherwise it will still have it's default value
+			accept := state{}
+			initial := state{symbol: r, edge1: &accept}
+
+			//Add a new nfa struct pointer to the stack which points to the nfaStack from the new state
+			nfaStack = append(nfaStack, &nfa{initial: &initial, accept: &accept})
+		}
+	}
+
+	//Return the stack which should have only one element
+	return nfaStack[0]
 }
 
 func main() {
