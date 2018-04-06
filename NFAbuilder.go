@@ -5,9 +5,11 @@ import (
 )
 
 func inToPost(infix string) string {
-	postfix := ""
+	specials := map[rune]int{'*': 10, '.': 9, '|': 8}
+	postfix := []rune{}
+	stack := []rune{}
 
-	return postfix
+	return string(postfix)
 }
 
 func main() {
