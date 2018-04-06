@@ -220,25 +220,42 @@ func postMatch(postfix string, s string) bool {
 func main() {
 	//inToPost test cases
 	//Answer: ab.c*
-	fmt.Println("Infix: ", "a.b.c*")
-	fmt.Println("Postfix: ", inToPost("a.b.c*"))
+	//fmt.Println("Infix: ", "a.b.c*")
+	//fmt.Println("Postfix: ", inToPost("a.b.c*"))
 
 	//Answer: abd|.*
-	fmt.Println("Infix: ", "(a.(b|d))*")
-	fmt.Println("postFix: ", inToPost("(a.(b|d))*"))
+	//fmt.Println("Infix: ", "(a.(b|d))*")
+	//fmt.Println("postFix: ", inToPost("(a.(b|d))*"))
 
 	//Answer: abd|.c*
-	fmt.Println("Infix: ", "a.(b|d).c*")
-	fmt.Println("postFix: ", inToPost("a.(b|d).c*"))
+	//fmt.Println("Infix: ", "a.(b|d).c*")
+	//fmt.Println("postFix: ", inToPost("a.(b|d).c*"))
 
 	//Answer: abb.+.c.
-	fmt.Println("Infix: ", "a.(b.b)+.c")
-	fmt.Println("postFix: ", inToPost("a.(b.b)+.c"))
+	//fmt.Println("Infix: ", "a.(b.b)+.c")
+	//fmt.Println("postFix: ", inToPost("a.(b.b)+.c"))
 
 	//regexToNFA test case
-	nfa := regexToNFA("ab.c*|")
-	fmt.Println(nfa)
+	//nfa := regexToNFA("ab.c*|")
+	//fmt.Println(nfa)
 
 	//postMatch test case
-	fmt.Println(postMatch(inToPost("a.b.c*"), "abccc"))
+	//fmt.Println(postMatch(inToPost("a.b.c*"), "abccc"))
+
+	exp := ""
+	testString := ""
+
+	fmt.Println("Enter an infix regular expression: ")
+	fmt.Scan(&exp)
+
+	fmt.Println("Enter a string: ")
+	fmt.Scan(&testString)
+
+	fmt.Println("*******************************************************")
+	fmt.Printf("Infix regular expression: \t%s\n", exp)
+	fmt.Printf("Postfix regular expression: \t%s\n", inToPost(exp))
+	fmt.Printf("String: \t\t\t%s\n", testString)
+	fmt.Printf("Match: \t\t\t%t\n", postMatch(inToPost(exp), testString))
+	fmt.Println("*******************************************************")
+
 }
