@@ -4,10 +4,27 @@ import (
 	"fmt"
 )
 
+//Holds the state parameters, up to two arrows coming from state and at least one will have a letter value on an arrow
+type state struct {
+	//Letter stored with one of arrows (If arrow has Epsilon then value will be left at default)
+	symbol rune
+	//Two possible arrows from current state, which will point to other states
+	edge1 *state
+	edge2 *state
+}
+
+//Keeps track of inital state and accept state of nfa fragment
+type nfa struct {
+	initial *state
+	accept  *state
+}
+
+//Function which changes infix expression to postfix expression
 func inToPost(infix string) string {
-	//Mapping special charaters to int values to easily determan order of precedence
+	//Mapping special charaters to int values to easily determin order of precedence
 	specials := map[rune]int{'*': 10, '.': 9, '|': 8}
 
+	//Arrays to hold final postfix and the working stack
 	postfix := []rune{}
 	stack := []rune{}
 
@@ -56,10 +73,17 @@ func inToPost(infix string) string {
 		stack = stack[:len(stack)-1]
 	}
 
+	//Return the postfix expression
 	return string(postfix)
 }
 
+//Function which changes postfix expression to a non-deterministic finite automaton (NFA)
+func regexToNFA(postfix string) *nfa {
+
+}
+
 func main() {
+	//inToPost test cases
 	//Answer: ab.c*
 	fmt.Println("Infix: ", "a.b.c*")
 	fmt.Println("Postfix: ", inToPost("a.b.c*"))
@@ -75,4 +99,8 @@ func main() {
 	//Answer: abb.+.c.
 	fmt.Println("Infix: ", "a.(b.b)+.c")
 	fmt.Println("postFix: ", inToPost("a.(b.b)+.c"))
+
+	//regexToNFA test case
+	nfa := regexToNFA("ab.c*|")
+	fmt.Println(nfa)
 }
