@@ -157,6 +157,24 @@ func regexToNFA(postfix string) *nfa {
 	return nfaStack[0]
 }
 
+//Function to find all starting states and add them to the current array to begin
+func addState(l []*state, s *state, a *state) []*state {
+	l = append(l, s)
+
+	//If symbol has default of 0, and isn't the accept state, then this state has Epsilon arrows coming from it
+	if s != a && s.symbol == 0 {
+		//Follow the new edge and check this new state through 'addState'
+		l = addState(l, s.edge1, a)
+		//Check if the state also has a second edge
+		if s.edge2 != nil {
+			//Follow the new second edge and check this new state through 'addState'
+			l = addState(l, s.edge2, a)
+		}
+	}
+
+	return l
+}
+
 func postMatch(postfix string, s string) bool {
 	//bool value to return
 	isMatch := false
@@ -167,13 +185,17 @@ func postMatch(postfix string, s string) bool {
 	//Array of states you can get to from current
 	next := []*state{}
 
+	//Call addState on 'current' to get the full list of possible starting states
+	current = addState(current[:], postfixNFA.initial, postfixNFA.accept)
+
 	//Loops through s input until its end ('_' holds position in string, 'r' holds value at position)
 	for _, r := range s {
 		//Loops however many different positions you are currently in ('_' holds position in string, 'c' holds value at position)
 		for _, c := range current {
-			//Check if current position 'c' is labled the same as 's'
+			//Check if current position 'c' is labled the same as 'r', meaning it has an arrow with 'r' symbol on it
 			if c.symbol == r {
-
+				//Call addState on 'next' to follow arrow to next state and add any arrows with Epsilon
+				next = addState(next[:], c.edge1, postfixNFA.accept)
 			}
 		}
 		//Replace 'current' states with the 'next' states
@@ -191,30 +213,31 @@ func postMatch(postfix string, s string) bool {
 		}
 	}
 
+	//Return true or false
 	return isMatch
 }
 
 func main() {
 	//inToPost test cases
 	//Answer: ab.c*
-	fmt.Println("Infix: ", "a.b.c*")
-	fmt.Println("Postfix: ", inToPost("a.b.c*"))
+	//fmt.Println("Infix: ", "a.b.c*")
+	//fmt.Println("Postfix: ", inToPost("a.b.c*"))
 
 	//Answer: abd|.*
-	fmt.Println("Infix: ", "(a.(b|d))*")
-	fmt.Println("postFix: ", inToPost("(a.(b|d))*"))
+	//fmt.Println("Infix: ", "(a.(b|d))*")
+	//fmt.Println("postFix: ", inToPost("(a.(b|d))*"))
 
 	//Answer: abd|.c*
-	fmt.Println("Infix: ", "a.(b|d).c*")
-	fmt.Println("postFix: ", inToPost("a.(b|d).c*"))
+	//fmt.Println("Infix: ", "a.(b|d).c*")
+	//fmt.Println("postFix: ", inToPost("a.(b|d).c*"))
 
 	//Answer: abb.+.c.
-	fmt.Println("Infix: ", "a.(b.b)+.c")
-	fmt.Println("postFix: ", inToPost("a.(b.b)+.c"))
+	//fmt.Println("Infix: ", "a.(b.b)+.c")
+	//fmt.Println("postFix: ", inToPost("a.(b.b)+.c"))
 
 	//regexToNFA test case
-	nfa := regexToNFA("ab.c*|")
-	fmt.Println(nfa)
+	//nfa := regexToNFA("ab.c*|")
+	//fmt.Println(nfa)
 
 	//postMatch test case
 	fmt.Println(postMatch("ab.c*|", "cccc"))
