@@ -65,8 +65,8 @@ func main() {
 	fmt.Println("Postfix: ", inToPost("a.b.c*"))
 
 	//Answer: abd|.*
-	fmt.Println("Infix: ", "(a.b|d))*")
-	fmt.Println("postFix: ", inToPost("(a.b|d))*"))
+	fmt.Println("Infix: ", "(a.(b|d))*")
+	fmt.Println("postFix: ", inToPost("(a.(b|d))*"))
 
 	//Answer: abd|.c*
 	fmt.Println("Infix: ", "a.(b|d).c*")
