@@ -148,8 +148,50 @@ func regexToNFA(postfix string) *nfa {
 		}
 	}
 
+	//Checking if the nfaStack does indeed have only one element
+	if len(nfaStack) != 1 {
+		fmt.Println("Uh oh: ", len(nfaStack), nfaStack)
+	}
+
 	//Return the stack which should have only one element
 	return nfaStack[0]
+}
+
+func postMatch(postfix string, s string) bool {
+	//bool value to return
+	isMatch := false
+	//NFA from the postfix value
+	postfixNFA := regexToNFA(postfix)
+	//Array of states you are currently in
+	current := []*state{}
+	//Array of states you can get to from current
+	next := []*state{}
+
+	//Loops through s input until its end ('_' holds position in string, 'r' holds value at position)
+	for _, r := range s {
+		//Loops however many different positions you are currently in ('_' holds position in string, 'c' holds value at position)
+		for _, c := range current {
+			//Check if current position 'c' is labled the same as 's'
+			if c.symbol == r {
+
+			}
+		}
+		//Replace 'current' states with the 'next' states
+		current = next
+		//Replace 'next' states with blank states to be filled in
+		next = []*state{}
+	}
+
+	//Loops through the current array (at this stage the current array is actually the end state)
+	for _, c := range current {
+		//If the current state is the accept state, 'isMatch' is true
+		if c == postfixNFA.accept {
+			isMatch = true
+			break
+		}
+	}
+
+	return isMatch
 }
 
 func main() {
@@ -173,4 +215,7 @@ func main() {
 	//regexToNFA test case
 	nfa := regexToNFA("ab.c*|")
 	fmt.Println(nfa)
+
+	//postMatch test case
+	fmt.Println(postMatch("ab.c*|", "cccc"))
 }
