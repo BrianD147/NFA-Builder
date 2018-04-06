@@ -251,6 +251,7 @@ func main() {
 	fmt.Println("Enter a string: ")
 	fmt.Scan(&testString)
 
+	fmt.Println()
 	fmt.Println("*******************************************************")
 	fmt.Printf("Infix regular expression: \t%s\n", exp)
 	fmt.Printf("Postfix regular expression: \t%s\n", inToPost(exp))
